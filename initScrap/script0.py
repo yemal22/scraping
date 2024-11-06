@@ -1,7 +1,21 @@
 import requests
-import json
+from bs4 import BeautifulSoup
 
-response = requests.get("https://www.google.com")
+url = "https://books.toscrape.com/"
+response = requests.get(url)
 
-with open('index.html', 'w') as f:
-    f.write(response.text)
+soup = BeautifulSoup(response.text, 'html.parser')
+
+# Fonction pour traverser le DOM
+def traverse_dom(element, level=0):
+    # Afficher l'élément actuel
+    if element.name:
+        print(f"{' ' * level}<{element.name}>")
+
+    # Si l'élément a des enfants, les parcourir également
+    if hasattr(element, 'children'):
+        for child in element.children:
+            traverse_dom(child, level + 1)
+
+# Commencer le parcours depuis la racine de l'arbre DOM
+traverse_dom(soup)
